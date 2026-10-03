@@ -1,0 +1,19 @@
+.main{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.heading{
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.form{
+    border: 1px solid;
+    padding: 10px;
+    margin: 10px;
+    text-align: center;
+}

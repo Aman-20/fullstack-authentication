@@ -1,0 +1,29 @@
+.main{
+    background-color: black;
+    color: white;
+    height: 60px;
+
+    display: flex;
+    flex-direction: row;
+    
+    justify-content: space-between;
+    align-items: center;
+}
+
+.head{
+    font-size: 1.8rem;
+    text-align: center;
+    font-weight: bold;
+}
+
+
+.links{
+    display: flex;
+    flex-direction: row;
+    margin-right: 2rem;
+    gap: 2rem;
+
+    font-size: 1.2rem;
+    text-decoration: none;
+}
+

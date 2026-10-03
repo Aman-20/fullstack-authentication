@@ -1,0 +1,65 @@
+import React, { useState } from 'react';
+import styles from "./ForgotPass.module.css";
+import { Link } from 'react-router-dom';
+
+import {API_URL} from "../../config"
+
+const ForgotPass = () => {
+    const [data , setdata] = useState("");
+    const [err, seterr] = useState("");
+    const [info, setinfo] = useState("");
+    const [loading, setloading] = useState(false);
+
+    const handleSubmit = async(e) => {
+        e.preventDefault();
+
+        try{
+            setloading(true);
+            seterr("");
+            setinfo("");
+
+            const reset = await fetch(`${API_URL}/user/forgot-password`, {
+                credentials:"include",
+                method:"POST",
+                headers:{"content-type":"application/json"},
+                body:JSON.stringify({email:data}),
+            });
+
+            const result = await reset.json();
+
+            if(result.success){
+                setinfo(result.msg || "reset link sent to your email");
+            } else {
+                seterr(result.msg || "unable to sent reset link");
+            }
+        } catch(err) {
+            seterr(err.message || "internal server error");
+        } finally{
+            setloading(false);
+        }
+    }
+
+  return (
+    <>
+    {err && <p>{err}</p>}
+    {info && <p>{info}</p>}
+    {loading && <p>Loading...</p>}
+
+    <div className={styles.main}>
+
+        <form onSubmit={handleSubmit} className={styles.form}>
+            <input type='email' placeholder='Enter your Email' value={data} onChange={(e)=>{setdata(e.target.value)}}/>
+
+            <button disabled={loading}>{loading? "Sending..." : "Send Reset Link"}</button>
+
+            <div className={styles.link}>
+            <Link to="/login">Login</Link>
+            <Link to="/signup">Signup</Link>
+            </div>
+        </form>
+    </div>
+    </>
+  )
+}
+
+export default ForgotPass

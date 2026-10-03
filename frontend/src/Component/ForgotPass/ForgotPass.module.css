@@ -1,0 +1,24 @@
+.main{
+    margin: 3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.form{
+    border: 1px solid;
+    display: flex;
+    margin: 1rem;
+    padding: 1rem;
+    gap: 1rem;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.link{
+    display: flex;
+    gap: 1rem;
+}
