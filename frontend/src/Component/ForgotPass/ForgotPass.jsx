@@ -6,6 +6,7 @@ import {API_URL} from "../../config"
 
 const ForgotPass = () => {
     const [data , setdata] = useState("");
+
     const [err, seterr] = useState("");
     const [info, setinfo] = useState("");
     const [loading, setloading] = useState(false);
@@ -13,11 +14,16 @@ const ForgotPass = () => {
     const handleSubmit = async(e) => {
         e.preventDefault();
 
+        seterr("");
+        setinfo("");
+
+        if(!data.includes("@gmail.com")){
+            seterr("Please Enter a valid email");
+            return;
+        }
+
         try{
             setloading(true);
-            seterr("");
-            setinfo("");
-
             const reset = await fetch(`${API_URL}/user/forgot-password`, {
                 credentials:"include",
                 method:"POST",
@@ -47,7 +53,10 @@ const ForgotPass = () => {
 
     <div className={styles.main}>
 
+        <div className={styles.head}>Forgot Password</div>
+
         <form onSubmit={handleSubmit} className={styles.form}>
+
             <input type='email' placeholder='Enter your Email' value={data} onChange={(e)=>{setdata(e.target.value)}}/>
 
             <button disabled={loading}>{loading? "Sending..." : "Send Reset Link"}</button>

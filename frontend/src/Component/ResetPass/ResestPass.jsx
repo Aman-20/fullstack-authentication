@@ -13,6 +13,7 @@ const ResestPass = () => {
 
     const [newPass, setNewPass] = useState("");
     const [confirmPass, setConfirmPass] = useState("");
+    
     const [err, seterr] = useState("");
     const [info, setinfo] = useState("");
     const [loading, setloading] = useState(false);
@@ -71,8 +72,9 @@ const ResestPass = () => {
         {err && <p>{err}</p>}
         {loading && <p>Loading...</p>}
 
-        <div>Reset Password</div>
-        <div>
+        <div className={styles.head}>Reset Password</div>
+
+        <div className={styles.formPage}>
             <form onSubmit={handleSubmit}>
 
                 <input type='password' placeholder='Enter your new Password' value={newPass} onChange={(e)=>{setNewPass(e.target.value)}}/>

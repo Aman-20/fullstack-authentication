@@ -9,10 +9,10 @@ const Login = () => {
   const {fetchAuth} = useAuth();
 
   const navigate = useNavigate();
-  const {state} = useLocation();
   
-  const [info, setinfo] = useState(state?.msg || "");
+  const [info, setinfo] = useState("");
   const [err, seterr] = useState("");
+  const [isloading, setisloading] = useState(false);
 
   const [formData, setFormData] = useState({
     email:"",
@@ -27,7 +27,15 @@ const Login = () => {
     e.preventDefault();
     seterr("");
     setinfo("");
+
+    if(!formData.email.trim() || !formData.password.trim()){
+      seterr("Please fill in all fields");
+      return;
+    }
+
     
+    try{
+    setisloading(true);
     const userlogin = await fetch(`${API_URL}/user/login`, {
       credentials:"include",
       method:"POST",
@@ -46,6 +54,12 @@ const Login = () => {
       console.log(result.msg);
       seterr(result.msg || "unable to login some error occured")
     }
+
+    } catch (err) {
+      seterr(err.message || "internal server error");
+    } finally {
+      setisloading(false);
+    }
   }
 
   return (
@@ -53,6 +67,7 @@ const Login = () => {
 
     {info && <p>{info}</p>}
     {err && <p>{err}</p>}
+    {isloading && <p>Loading...</p>}
 
     <div className={styles.main}>
 

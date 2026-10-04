@@ -39,7 +39,7 @@ async function handleSignup(req, res) {
 
     const newOtp = generateOtp();
 
-    await Otp.findOneAndUpdate({email, purpose:"email_verify"}, {code:newOtp, expiresAt: new Date(Date.now()+OTP_EXPIRY), attempts: 0}, {upsert:true, new:true});
+    await Otp.findOneAndUpdate({email, purpose:"email_verify"}, {code:newOtp, expiresAt: new Date(Date.now()+OTP_EXPIRY), attempts: 0}, {upsert:true, returnDocument: 'after'});
 
     await sendOtp(email, newOtp);
     
@@ -78,8 +78,17 @@ async function verifyOtp(req, res){
         return res.json({success:false, msg:`Invalid OTP. ${MAX_ATTEMPTS - record.attempts} attempts left`});
     }
 
-    await User.updateOne({email}, {isVerified:true});
+    const user = await User.updateOne({email}, {isVerified:true}, {returnDocument: 'after'});
+
     await Otp.deleteOne({_id: record._id});
+
+    const token = setUser(user);
+    res.cookie("uid", token, {
+        maxAge: 60 * 60 * 1000,
+        httpOnly: true,
+        secure: true, //false
+        sameSite: "none", //lax
+    });
 
     return res.json({success:true, msg:"Email verified successfully"});
 
@@ -112,7 +121,7 @@ async function resendOtp(req, res){
 
     const newOtp = generateOtp();
 
-    await Otp.findOneAndUpdate({email, purpose:"email_verify"}, {code:newOtp, expiresAt: new Date(Date.now()+OTP_EXPIRY), attempts: 0}, {upsert:true, new:true});
+    await Otp.findOneAndUpdate({email, purpose:"email_verify"}, {code:newOtp, expiresAt: new Date(Date.now()+OTP_EXPIRY), attempts: 0}, {upsert:true, returnDocument: 'after'});
 
     await sendOtp(email, newOtp);
 
@@ -171,9 +180,9 @@ async function forgotPassword(req, res){
     }
 
     const token = generateLink();
-    await Otp.findOneAndUpdate({email, purpose:"pass_reset"}, {code:token, expiresAt:Date.now()+ OTP_EXPIRY, attempts:0}, {upsert:true, new:true});
+    await Otp.findOneAndUpdate({email, purpose:"pass_reset"}, {code:token, expiresAt:Date.now()+ OTP_EXPIRY, attempts:0}, {upsert:true, returnDocument: 'after'});
 
-    const resetLink = `http://localhost:5173/reset-password/${token}?email=${email}`;
+    const resetLink = `${process.env.FRONTEND_URL}/reset-password/${token}?email=${email}`;
 
     await sendLink(email, resetLink);
 

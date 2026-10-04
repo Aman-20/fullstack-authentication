@@ -8,6 +8,7 @@ const Signup = () => {
 
   const [data, setdata] = useState();
   const [err, seterr] = useState();
+  const [isloading, setisloading] = useState(false);
 
 
   const [formData, setFormData] = useState({
@@ -22,8 +23,27 @@ const Signup = () => {
 
   const handleSubmit = async(e) =>{
     e.preventDefault();
-    console.log(formData);
 
+    seterr("");
+    setdata("");
+
+    if(formData.name.trim().length < 3){
+      seterr("Name must be at least 3 characters");
+      return;
+    }
+
+    if(!formData.email.includes("@gmail.com")){
+      seterr("Enter a valid email");
+      return;
+    }
+
+    if(formData.password.length < 6){
+      seterr("Password must be at least 6 characters");
+      return;
+    }
+
+    try{
+    setisloading(true);
     const register = await fetch(`${API_URL}/user/signup`, {
       credentials:"include",
       method:"POST",
@@ -40,6 +60,12 @@ const Signup = () => {
       seterr(result.msg || "Some Error Occured While Signup")
     }
 
+  } catch (err){
+    seterr(err.message || "internal server error");
+  } finally{
+    setisloading(false);
+  }
+
   }
 
 
@@ -49,6 +75,7 @@ const Signup = () => {
 
       {err && <p>{err}</p>}
       {data && <p>{data}</p>}
+      {isloading && <p>Loading...</p>}
 
       <div className={styles.heading}>SignUp</div> 
 

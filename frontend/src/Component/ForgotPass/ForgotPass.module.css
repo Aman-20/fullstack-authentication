@@ -1,8 +1,14 @@
 .main{
     margin: 3rem;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+.head{
+    font-weight: bold;
+    font-size: 2rem;
 }
 
 .form{

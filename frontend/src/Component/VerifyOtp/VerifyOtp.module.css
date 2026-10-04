@@ -2,7 +2,20 @@
     display: flex;
     flex-direction: column;
 
+    justify-content: center;
+    align-items: center;
+}
+
+.head{
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.formPage{
     border: 1px solid;
+
+    display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
 
