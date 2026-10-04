@@ -1,59 +1,59 @@
 import React, { useState } from 'react'
 import styles from "./Login.module.css";
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
-import {useAuth} from "../Auth/Authcontext";
+import { useAuth } from "../Auth/Authcontext";
 
-import {API_URL} from "../../config";
+import { API_URL } from "../../config";
 
 const Login = () => {
-  const {fetchAuth} = useAuth();
+  const { fetchAuth } = useAuth();
 
   const navigate = useNavigate();
-  
+
   const [info, setinfo] = useState("");
   const [err, seterr] = useState("");
   const [isloading, setisloading] = useState(false);
 
   const [formData, setFormData] = useState({
-    email:"",
-    password:"",
+    email: "",
+    password: "",
   });
 
-  const handleChange = (e) =>{
-    setFormData({...formData, [e.target.name]:e.target.value});
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   }
 
-  const handleSubmit = async(e) =>{
+  const handleSubmit = async (e) => {
     e.preventDefault();
     seterr("");
     setinfo("");
 
-    if(!formData.email.trim() || !formData.password.trim()){
+    if (!formData.email.trim() || !formData.password.trim()) {
       seterr("Please fill in all fields");
       return;
     }
 
-    
-    try{
-    setisloading(true);
-    const userlogin = await fetch(`${API_URL}/user/login`, {
-      credentials:"include",
-      method:"POST",
-      headers:{"content-type":"application/json"},
-      body:JSON.stringify(formData),
-    });
 
-    const result = await userlogin.json();
+    try {
+      setisloading(true);
+      const userlogin = await fetch(`${API_URL}/user/login`, {
+        credentials: "include",
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(formData),
+      });
 
-    if(result.success){
-      setinfo(result.msg || "logged in successfully");
-      await fetchAuth();
-      navigate("/");
+      const result = await userlogin.json();
 
-    } else {
-      console.log(result.msg);
-      seterr(result.msg || "unable to login some error occured")
-    }
+      if (result.success) {
+        setinfo(result.msg || "logged in successfully");
+        await fetchAuth();
+        navigate("/");
+
+      } else {
+        console.log(result.msg);
+        seterr(result.msg || "unable to login some error occured")
+      }
 
     } catch (err) {
       seterr(err.message || "internal server error");
@@ -63,36 +63,37 @@ const Login = () => {
   }
 
   return (
-    <>
-
-    {info && <p>{info}</p>}
-    {err && <p>{err}</p>}
-    {isloading && <p>Loading...</p>}
-
     <div className={styles.main}>
 
-      <div className={styles.heading}>Login</div> 
+      {info && <p className={styles.success}>{info}</p>}
+      {err && <p className={styles.error}>{err}</p>}
+      {isloading && <p className={styles.loading}>Loading...</p>}
+
+      <div className={styles.heading}>Login</div>
 
       <div className={styles.form}>
+        <form onSubmit={handleSubmit} className={styles.formPage}>
 
-      <form onSubmit={handleSubmit}>
-        <label htmlFor='email'>Email</label>
-        <input type='email' name='email' id='email' value={formData.email} onChange={handleChange}/> <br/><br/>
+          <div className={styles.field}>
+            <label htmlFor="email">Email</label>
+            <input type="email" name="email" id="email" value={formData.email} onChange={handleChange} />
+          </div>
 
-        <label htmlFor='password'>Password</label>
-        <input type='password' name='password' id='password' value={formData.password} onChange={handleChange}/> <br/><br/>
+          <div className={styles.field}>
+            <label htmlFor="password">Password</label>
+            <input type="password" name="password" id="password" value={formData.password} onChange={handleChange} />
+          </div>
 
-        <button>Submit</button> <br/><br/>
+          <button className={styles.button} disabled={isloading}>Submit</button>
 
-        <Link to="/signup">SignUp</Link> <br/><br/>
-
-        <Link to="/forgot-password">Forgot Password?</Link>
-      </form>
-      
+          <div className={styles.links}>
+            <Link to="/forgot-password" className={styles.forgot}>Forgot Password?</Link>
+            <Link to="/signup" className={styles.link}>Create account</Link>
+          </div>
+          
+        </form>
       </div>
-
-    </div> 
-    </>
+    </div>
   )
 }
 

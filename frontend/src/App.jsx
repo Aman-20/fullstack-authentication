@@ -1,5 +1,5 @@
 import React from 'react'
-import Styles from "./App.module.css";
+import styles from "./App.module.css";
 
 import {BrowserRouter as Router, Routes, Route, Link} from 'react-router-dom';
 
@@ -14,11 +14,19 @@ import { ProtectedRoute } from './Component/ProtectedRoute';
 import { RedirectIfAuth } from './Component/RedirectIfAuth';
 import { useAuth } from './Component/Auth/Authcontext';
 
+import NotFound from './Component/NotFound/NotFound';
+import HomePage from './Component/HomePage/HomePage';
+
 const App = () => {
 
   const {loading} = useAuth();
-  if(loading){
-    return <p>Loading...</p>
+  if (loading) {
+    return (
+      <div className={styles.loaderPage}>
+        <div className={styles.spinner}></div>
+        <p className={styles.loadingText}>Loading...</p>
+      </div>
+    )
   }
 
   return (
@@ -28,7 +36,7 @@ const App = () => {
       <Navbar/>
 
       <Routes>
-        <Route path="/" element={ <ProtectedRoute> <h1>Home Page</h1> </ProtectedRoute> }/>
+        <Route path="/" element={ <ProtectedRoute> <HomePage/> </ProtectedRoute> }/>
         
         <Route path="/signup" element={ <RedirectIfAuth> <Signup/> </RedirectIfAuth> }/>
         <Route path="/login" element={ <RedirectIfAuth> <Login/> </RedirectIfAuth> }/>
@@ -38,7 +46,7 @@ const App = () => {
         <Route path="/forgot-password" element={ <RedirectIfAuth> <ForgotPass/> </RedirectIfAuth> } />
         <Route path="/reset-password/:token" element={ <RedirectIfAuth>  <ResestPass/> </RedirectIfAuth> } />
 
-        <Route path='*' element={<Link to={"/"}>Back To Home Page</Link>} />
+        <Route path='*' element={<NotFound/>} />
       </Routes>
       
     </Router>
