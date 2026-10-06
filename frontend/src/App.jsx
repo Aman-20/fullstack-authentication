@@ -17,14 +17,15 @@ import { useAuth } from './Component/Auth/Authcontext';
 import NotFound from './Component/NotFound/NotFound';
 import HomePage from './Component/HomePage/HomePage';
 
+
 const App = () => {
 
   const {loading} = useAuth();
   if (loading) {
     return (
       <div className={styles.loaderPage}>
-        <div className={styles.spinner}></div>
-        <p className={styles.loadingText}>Loading...</p>
+        <img src="/auth-loader.svg" alt="Loading" width="110" height="110" />
+        <p className={styles.loadingText}>Waking up the server…</p>
       </div>
     )
   }

@@ -4,11 +4,10 @@ import { AuthContext } from './Authcontext';
 
 const Authprovider = ({children}) => {
 
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [user, setUser] = useState(null);
 
     async function fetchAuth() {
-        setLoading(true);
 
         try{
             const result = await fetch(`${API_URL}/user/me`, {
