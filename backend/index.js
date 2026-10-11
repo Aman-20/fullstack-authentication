@@ -12,6 +12,8 @@ const userRoute = require("../backend/router/userRoute");
 const PORT = process.env.PORT || 3000;
 const app = express();
 
+app.set("trust proxy", 1);
+
 //middleware
 app.use(express.urlencoded({extended:false}));
 app.use(express.json());

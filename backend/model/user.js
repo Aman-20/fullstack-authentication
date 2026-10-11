@@ -18,6 +18,40 @@ const userSchema = new mongoose.Schema({
         type:Boolean,
         default:false,
     },
+    otpLimit:{
+        count:{
+            type:Number,
+            default:0,
+        },
+        windowStart:{
+            type:Date,
+            default:null,
+        }
+    },
+    resetLimit:{
+        count:{
+            type:Number,
+            default:0,
+        },
+        windowStart:{
+            type:Date,
+            default:null,
+        }
+    },
+    loginLimit:{
+        count:{
+            type:Number,
+            default:0,
+        },
+        windowStart:{
+            type:Date,
+            default:null,
+        }
+    },
+    passwordChangedAt: { 
+        type: Date, 
+        default: null 
+    },
 });
 
 
