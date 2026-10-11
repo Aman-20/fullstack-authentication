@@ -9,9 +9,12 @@ const mongoConnect = require("../backend/config/connection");
 const staticRoute = require("../backend/router/staticRoute");
 const userRoute = require("../backend/router/userRoute");
 
+const helmet = require("helmet");
+
 const PORT = process.env.PORT || 3000;
 const app = express();
 
+app.use(helmet());
 app.set("trust proxy", 1);
 
 //middleware

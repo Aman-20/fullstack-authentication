@@ -7,7 +7,10 @@ function setUser(user){
             _id:user._id,
             name:user.name,
             email:user.email
-        }, secret);
+        }, 
+        secret,
+        { expiresIn: "1h" }
+    );
     } catch (err){
         console.log("jwt sign error", err);
     }

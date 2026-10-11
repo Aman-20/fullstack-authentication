@@ -12,6 +12,7 @@ const Navbar = () => {
     try{
       await fetch(`${API_URL}/user/logout`, {
         credentials:"include",
+        method:"POST",
       });
     } catch(err){
       console.log(err);

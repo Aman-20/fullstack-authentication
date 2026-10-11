@@ -17,7 +17,7 @@ router.post("/signup", emailLimiter, handleSignup);
 
 router.post("/login", authLimiter, handleLogin);
 
-router.get("/logout", handleLogout);
+router.post("/logout", handleLogout);
 
 router.post("/verify-otp", authLimiter, verifyOtp);
 
