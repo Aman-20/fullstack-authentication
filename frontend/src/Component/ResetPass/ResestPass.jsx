@@ -7,8 +7,6 @@ const ResestPass = () => {
     const navigate = useNavigate();
 
     const { token } = useParams();
-    const [searchparam] = useSearchParams();
-    const email = searchparam.get("email");
 
 
     const [newPass, setNewPass] = useState("");
@@ -41,7 +39,7 @@ const ResestPass = () => {
                 credentials: "include",
                 method: "POST",
                 headers: { "content-type": "application/json" },
-                body: JSON.stringify({ email, token, newPass }),
+                body: JSON.stringify({ token, newPass }),
             });
 
             const result = await changePass.json();
@@ -60,7 +58,7 @@ const ResestPass = () => {
     }
 
 
-    if (!email) {
+    if (!token) {
         return <p>Invalid or incomplete reset link. Please request a new one.</p>;
     }
 

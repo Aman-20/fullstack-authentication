@@ -227,6 +227,10 @@ async function forgotPassword(req, res) {
             return res.json({ success: false, msg: "User does not exist" });
         }
 
+        if(!user.isVerified){
+            return res.json({ success: false, msg: "User does not exist" });
+        }
+
         //read only reset 
         if (!readOnlyLimit(user, "resetLimit")) {
             return res.json({ success: false, msg: "Too many attempts. Try again later!" });
@@ -251,7 +255,7 @@ async function forgotPassword(req, res) {
         const token = generateLink();
         await Otp.findOneAndUpdate({ email, purpose: "pass_reset" }, { code: token, expiresAt: Date.now() + OTP_EXPIRY, attempts: 0, sentAt: new Date() }, { upsert: true, returnDocument: 'after' });
 
-        const resetLink = `${process.env.FRONTEND_URL}/reset-password/${token}?email=${email}`;
+        const resetLink = `${process.env.FRONTEND_URL}/reset-password/${token}`;
 
         await sendLink(email, resetLink);
 
@@ -265,9 +269,9 @@ async function forgotPassword(req, res) {
 
 async function resetPassword(req, res) {
     try {
-        const { email, token, newPass } = req.body;
+        const {token, newPass } = req.body;
 
-        const record = await Otp.findOne({ email, purpose: "pass_reset" });
+        const record = await Otp.findOne({ code:token, purpose: "pass_reset" });
 
         if (!record) {
             return res.json({ success: false, msg: "Invalid or expired reset link" });
@@ -277,13 +281,9 @@ async function resetPassword(req, res) {
             return res.json({ success: false, msg: "Reset link expired. Please request a new one" });
         }
 
-        if (record.code !== token) {
-            return res.json({ success: false, msg: "Invalid reset link" });
-        }
-
         const hashPass = await hashUserPass(newPass);
 
-        await User.findOneAndUpdate({ email }, { pass: hashPass, passwordChangedAt: new Date() });
+        await User.findOneAndUpdate({ email:record.email }, { pass: hashPass, passwordChangedAt: new Date() });
 
         await Otp.deleteOne({ _id: record._id });
 
